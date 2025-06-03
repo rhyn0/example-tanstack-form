@@ -1,24 +1,46 @@
 {
-    "prettier.enable": false,
+  "files.watcherExclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "search.exclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "files.readonlyInclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.maxTokenizationLineLength": 2500,
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[json]": {
+    "editor.quickSuggestions": {
+      "strings": true
+  },
+  "editor.suggest.insertMode": "replace",
+  "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "editor.codeActionsOnSave": {
+    "source.organizeImports.biome": "explicit",
+    "quickfix.biome": "explicit"
+
+  },
     "biome.enabled": true,
     "biome.lspBin": "./node_modules/.bin/biome",
-    "[javascript]": {
-        "editor.maxTokenizationLineLength": 2500,
-        "editor.defaultFormatter": "biomejs.biome"
-    },
-    "[typescript]": {
-        "editor.defaultFormatter": "biomejs.biome"
-    },
-    "[typescriptreact]": {
-        "editor.defaultFormatter": "biomejs.biome"
-    },
-    "[json]": {
-        "editor.quickSuggestions": {
-            "strings": true
-        },
-        "editor.suggest.insertMode": "replace",
-        "editor.defaultFormatter": "biomejs.biome"
-    },
     // testing in vscode
     // easiest to cmd+shift+p and Test: Start Continuous Run
     "testing.alwaysRevealTestOnStateChange": true,
@@ -30,8 +52,17 @@
     "editor.tabSize": 4,
     "editor.formatOnSave": true,
     "editor.formatOnType": false,
-    "inlineFold.regex": "(class|className)=[`'{\"]([^`'\"}]{30,})[`'\"}]",
-    "inlineFold.maskChar": "⌨",
+    "tailwind-fold.autoFold": true,
+    "tailwind-fold.foldLengthThreshold": 32,
+    "tailwind-fold.foldStyle": "QUOTES",
+    "tailwind-fold.showTailwindImage": true,
+    "tailwind-fold.supportedLanguages": [
+      "html",
+      "typescriptreact",
+      "javascriptreact",
+      "typescript",
+      "javascript",
+    ],
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,
@@ -41,7 +72,4 @@
         "**/node_modules": true,
         "**/Thumbs.db": true
     },
-    "editor.codeActionsOnSave": {
-        "quickfix.biome": "explicit"
-    }
 }
