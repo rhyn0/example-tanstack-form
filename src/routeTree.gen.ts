@@ -11,10 +11,17 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as FieldFormImport } from './routes/field-form'
 import { Route as EventFormImport } from './routes/event-form'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const FieldFormRoute = FieldFormImport.update({
+  id: '/field-form',
+  path: '/field-form',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const EventFormRoute = EventFormImport.update({
   id: '/event-form',
@@ -46,6 +53,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EventFormImport
       parentRoute: typeof rootRoute
     }
+    '/field-form': {
+      id: '/field-form'
+      path: '/field-form'
+      fullPath: '/field-form'
+      preLoaderRoute: typeof FieldFormImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -54,36 +68,41 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/event-form': typeof EventFormRoute
+  '/field-form': typeof FieldFormRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/event-form': typeof EventFormRoute
+  '/field-form': typeof FieldFormRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/event-form': typeof EventFormRoute
+  '/field-form': typeof FieldFormRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/event-form'
+  fullPaths: '/' | '/event-form' | '/field-form'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/event-form'
-  id: '__root__' | '/' | '/event-form'
+  to: '/' | '/event-form' | '/field-form'
+  id: '__root__' | '/' | '/event-form' | '/field-form'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   EventFormRoute: typeof EventFormRoute
+  FieldFormRoute: typeof FieldFormRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   EventFormRoute: EventFormRoute,
+  FieldFormRoute: FieldFormRoute,
 }
 
 export const routeTree = rootRoute
@@ -97,7 +116,8 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/event-form"
+        "/event-form",
+        "/field-form"
       ]
     },
     "/": {
@@ -105,6 +125,9 @@ export const routeTree = rootRoute
     },
     "/event-form": {
       "filePath": "event-form.tsx"
+    },
+    "/field-form": {
+      "filePath": "field-form.tsx"
     }
   }
 }

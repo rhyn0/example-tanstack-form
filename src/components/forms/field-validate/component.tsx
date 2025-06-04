@@ -19,7 +19,20 @@ import { useForm } from "@tanstack/react-form";
 import React from "react";
 import { eventFormOptions } from "./schema";
 
-function EventForm() {
+type ErrorDisplayProps = {
+    isValid: boolean;
+    errors: string[];
+};
+function ErrorDisplay({ isValid, errors }: ErrorDisplayProps) {
+    return (
+        !isValid && <em className="text-sm text-red-400">{errors.join(",")}</em>
+    );
+}
+
+/**
+ *  Now with this forms base options don't include a validator, we have to do per field validation.
+ */
+function FieldEventForm() {
     const form = useForm({
         ...eventFormOptions,
     });
@@ -31,11 +44,27 @@ function EventForm() {
         },
         [form.handleSubmit],
     );
+    const handleReset = React.useCallback(
+        (e: React.MouseEvent<HTMLButtonElement>) => {
+            e.preventDefault();
+            form.reset();
+        },
+        [form.reset],
+    );
 
     return (
         <form onSubmit={handleSubmit} className="flex flex-col space-y-2">
             <h2 className="text-2xl font-semibold">Personal Information</h2>
-            <form.Field name="name">
+            <form.Field
+                name="name"
+                validators={{
+                    onChange: ({ value }) => {
+                        return value.length < 1
+                            ? "Name must have at least one (1) character"
+                            : undefined;
+                    },
+                }}
+            >
                 {(field) => (
                     <div className="flex flex-col space-y-1">
                         <Label htmlFor={field.name}>Name:</Label>
@@ -46,17 +75,23 @@ function EventForm() {
                             onBlur={field.handleBlur}
                             onChange={(e) => field.handleChange(e.target.value)}
                         />
-                        {!field.state.meta.isValid && (
-                            <em className="text-sm text-red-400">
-                                {field.state.meta.errors
-                                    .map((e) => e.message)
-                                    .join(",")}
-                            </em>
-                        )}
+                        <ErrorDisplay
+                            isValid={field.state.meta.isValid}
+                            errors={field.state.meta.errors}
+                        />
                     </div>
                 )}
             </form.Field>
-            <form.Field name="title">
+            <form.Field
+                name="title"
+                validators={{
+                    onChange: ({ value }) => {
+                        return validTitles.includes(value)
+                            ? undefined
+                            : "Please choose a valid title.";
+                    },
+                }}
+            >
                 {(field) => (
                     <div className="flex flex-col space-y-1">
                         <Select
@@ -78,18 +113,24 @@ function EventForm() {
                                     </SelectItem>
                                 ))}
                             </SelectContent>
-                            {!field.state.meta.isValid && (
-                                <em className="text-sm text-red-400">
-                                    {field.state.meta.errors
-                                        .map((e) => e.message)
-                                        .join(",")}
-                                </em>
-                            )}
+                            <ErrorDisplay
+                                isValid={field.state.meta.isValid}
+                                errors={field.state.meta.errors}
+                            />
                         </Select>
                     </div>
                 )}
             </form.Field>
-            <form.Field name="birthday">
+            <form.Field
+                name="birthday"
+                validators={{
+                    onChange: ({ value }) => {
+                        return value < new Date()
+                            ? undefined
+                            : "Birthday can't be in the future.";
+                    },
+                }}
+            >
                 {(field) => (
                     <div className="flex flex-col space-y-1">
                         <Label htmlFor={field.name}>Birth Date:</Label>
@@ -101,20 +142,29 @@ function EventForm() {
                                 field.handleChange(e ?? new Date())
                             }
                         />
-                        {!field.state.meta.isValid && (
-                            <em className="text-sm text-red-400">
-                                {field.state.meta.errors
-                                    .map((e) => e.message)
-                                    .join(",")}
-                            </em>
-                        )}
+                        <ErrorDisplay
+                            isValid={field.state.meta.isValid}
+                            errors={field.state.meta.errors}
+                        />
                     </div>
                 )}
             </form.Field>
-            <form.Field name="email">
+            <form.Field
+                name="email"
+                validators={{
+                    onChange: ({ value }) => {
+                        return value.includes("@")
+                            ? undefined
+                            : "email must have the @ symbol";
+                    },
+                }}
+            >
                 {(field) => (
                     <div className="flex flex-col space-y-1">
                         <Label htmlFor={field.name}>Email:</Label>
+                        <em className="text-xs">
+                            While not the best validation, its just an example.
+                        </em>
                         <Input
                             id={field.name}
                             name={field.name}
@@ -122,17 +172,23 @@ function EventForm() {
                             onBlur={field.handleBlur}
                             onChange={(e) => field.handleChange(e.target.value)}
                         />
-                        {!field.state.meta.isValid && (
-                            <em className="text-sm text-red-400">
-                                {field.state.meta.errors
-                                    .map((e) => e.message)
-                                    .join(",")}
-                            </em>
-                        )}
+                        <ErrorDisplay
+                            isValid={field.state.meta.isValid}
+                            errors={field.state.meta.errors}
+                        />
                     </div>
                 )}
             </form.Field>
-            <form.Field name="organization">
+            <form.Field
+                name="organization"
+                validators={{
+                    onChange: ({ value }) => {
+                        return value.length > 2
+                            ? undefined
+                            : "Organization must be 2 characters long";
+                    },
+                }}
+            >
                 {(field) => (
                     <div className="flex flex-col space-y-1">
                         <Label htmlFor={field.name}>Organization:</Label>
@@ -143,13 +199,10 @@ function EventForm() {
                             onBlur={field.handleBlur}
                             onChange={(e) => field.handleChange(e.target.value)}
                         />
-                        {!field.state.meta.isValid && (
-                            <em className="text-sm text-red-400">
-                                {field.state.meta.errors
-                                    .map((e) => e.message)
-                                    .join(",")}
-                            </em>
-                        )}
+                        <ErrorDisplay
+                            isValid={field.state.meta.isValid}
+                            errors={field.state.meta.errors}
+                        />
                     </div>
                 )}
             </form.Field>
@@ -167,6 +220,15 @@ function EventForm() {
                                     >
                                         <form.Field
                                             name={`dietaryRestrictions[${i}].value`}
+                                            validators={{
+                                                onChange: ({ value }) => {
+                                                    dietaryRestrictionOptions.includes(
+                                                        value,
+                                                    )
+                                                        ? undefined
+                                                        : "Unrecognized dietary restriction";
+                                                },
+                                            }}
                                         >
                                             {(subField) => (
                                                 <div>
@@ -225,13 +287,10 @@ function EventForm() {
                                     </div>
                                 );
                             })}
-                            {!field.state.meta.isValid && (
-                                <em className="text-sm text-red-400">
-                                    {field.state.meta.errors
-                                        .map((e) => e.message)
-                                        .join(",")}
-                                </em>
-                            )}
+                            <ErrorDisplay
+                                isValid={field.state.meta.isValid}
+                                errors={field.state.meta.errors}
+                            />
                             <Button
                                 onClick={() => field.pushValue({ value: "" })}
                                 type="button"
@@ -243,7 +302,33 @@ function EventForm() {
                 }}
             </form.Field>
             <h2 className="text-2xl font-semibold">Tickets</h2>
-            <form.Field name="tickets" mode="array">
+            <form.Field
+                name="tickets"
+                mode="array"
+                validators={{
+                    onChange: ({ value }) => {
+                        const totalTickets = value.reduce(
+                            (acc, ticketChoice) =>
+                                acc + ticketChoice.numberOfTickets,
+                            0,
+                        );
+                        const uniqueTicketTypes = new Set(
+                            value.map(
+                                (ticketChoice) => ticketChoice.registrationType,
+                            ),
+                        );
+                        const positiveNumberTickets = totalTickets > 0;
+                        const noRepeatingTicketTypes =
+                            uniqueTicketTypes.size === value.length;
+
+                        return !positiveNumberTickets
+                            ? "Must buy at least one ticket"
+                            : !noRepeatingTicketTypes
+                              ? "Please group ticket types together"
+                              : undefined;
+                    },
+                }}
+            >
                 {(field) => {
                     return (
                         <div>
@@ -257,6 +342,29 @@ function EventForm() {
                                     >
                                         <form.Field
                                             name={`tickets[${i}].registrationType`}
+                                            validators={{
+                                                onMount: ({ value }) => {
+                                                    return registrationTypeOptions.includes(
+                                                        value,
+                                                    )
+                                                        ? undefined
+                                                        : "Please select a type of ticket";
+                                                },
+                                                onBlur: ({ value }) => {
+                                                    return registrationTypeOptions.includes(
+                                                        value,
+                                                    )
+                                                        ? undefined
+                                                        : "Please select a type of ticket";
+                                                },
+                                                onChange: ({ value }) => {
+                                                    return registrationTypeOptions.includes(
+                                                        value,
+                                                    )
+                                                        ? undefined
+                                                        : "Please select a type of ticket";
+                                                },
+                                            }}
                                         >
                                             {(subField) => (
                                                 <div>
@@ -335,13 +443,10 @@ function EventForm() {
                                     </div>
                                 );
                             })}
-                            {!field.state.meta.isValid && (
-                                <em className="text-sm text-red-400">
-                                    {field.state.meta.errors
-                                        .map((e) => e.message)
-                                        .join(",")}
-                                </em>
-                            )}
+                            <ErrorDisplay
+                                isValid={field.state.meta.isValid}
+                                errors={field.state.meta.errors}
+                            />
                             <Button
                                 onClick={() =>
                                     field.pushValue({
@@ -391,8 +496,11 @@ function EventForm() {
                     </Button>
                 )}
             </form.Subscribe>
+            <Button variant="destructive" type="reset" onClick={handleReset}>
+                Reset
+            </Button>
         </form>
     );
 }
 
-export default EventForm;
+export default FieldEventForm;
