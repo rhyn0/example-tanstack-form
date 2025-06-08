@@ -13,6 +13,9 @@ export default function Header() {
                 <div className="px-2 font-bold bg-gray-400 border border-solid border-black">
                     <Link to="/field-form">Field Validate Form</Link>
                 </div>
+                <div className="px-2 font-bold bg-gray-400 border border-solid border-black">
+                    <Link to="/debounced-field">Debounced</Link>
+                </div>
             </nav>
         </header>
     );
