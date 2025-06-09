@@ -15,29 +15,29 @@ jobs:
               uses: actions/checkout@v2
 
             - name: Setup NodeJS
-              uses: actions/setup-node@v4.0.2
+              uses: actions/setup-node@v4.4.0
               with:
                   node-version-file: ".nvmrc"
-                  cache: "npm"
+                  cache: "pnpm"
                   check-latest: true
 
             - name: Install dependencies
-              run: npm ci
+              run: pnpm i
 
             - name: Run lint
               run: |
                   if [ ! -f .env.local ]; then 
                       cp .env.template .env.local;
                   fi
-                  npm run lint --quiet
+                  pnpm run lint
 
             - name: Run type checks
-              run: npm run lint:types
+              run: pnpm lint:types
 
             - name: Check for any diffs
               run: git diff --exit-code
 
-            - name: Comment on Summary if Failure
+            - name: Comment on Summary if `F`ailure
               if: ${{ failure() }}
               run: |
                   echo "Lint checks failed. Please review and fix the issues." | tee -a ${GITHUB_STEP_SUMMARY}

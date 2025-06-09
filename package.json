@@ -10,7 +10,7 @@
     "test": "vitest run",
     "format": "biome format",
     "fix": "pnpm format --write && pnpm check --write",
-    "lint": "pnpm lint:biome && pnpm lint:types",
+    "lint": "pnpm lint:biome",
     "lint:biome": "biome lint",
     "lint:types": "tsc --noEmit",
     "check": "biome check",

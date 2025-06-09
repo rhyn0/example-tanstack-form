@@ -1,3 +1,4 @@
+import { ErrorDisplay } from "@/components/field-error-display";
 import {
     dietaryRestrictionOptions,
     registrationTypeOptions,
@@ -18,16 +19,6 @@ import {
 import { useForm } from "@tanstack/react-form";
 import React from "react";
 import { eventFormOptions } from "./schema";
-
-type ErrorDisplayProps = {
-    isValid: boolean;
-    errors: string[];
-};
-function ErrorDisplay({ isValid, errors }: ErrorDisplayProps) {
-    return (
-        !isValid && <em className="text-sm text-red-400">{errors.join(",")}</em>
-    );
-}
 
 /**
  *  Now with this forms base options don't include a validator, we have to do per field validation.

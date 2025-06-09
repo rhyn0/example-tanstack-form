@@ -11,12 +11,19 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as PasswordImport } from './routes/password'
 import { Route as FieldFormImport } from './routes/field-form'
 import { Route as EventFormImport } from './routes/event-form'
 import { Route as DebouncedFieldImport } from './routes/debounced-field'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const PasswordRoute = PasswordImport.update({
+  id: '/password',
+  path: '/password',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const FieldFormRoute = FieldFormImport.update({
   id: '/field-form',
@@ -74,6 +81,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FieldFormImport
       parentRoute: typeof rootRoute
     }
+    '/password': {
+      id: '/password'
+      path: '/password'
+      fullPath: '/password'
+      preLoaderRoute: typeof PasswordImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -84,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/debounced-field': typeof DebouncedFieldRoute
   '/event-form': typeof EventFormRoute
   '/field-form': typeof FieldFormRoute
+  '/password': typeof PasswordRoute
 }
 
 export interface FileRoutesByTo {
@@ -91,6 +106,7 @@ export interface FileRoutesByTo {
   '/debounced-field': typeof DebouncedFieldRoute
   '/event-form': typeof EventFormRoute
   '/field-form': typeof FieldFormRoute
+  '/password': typeof PasswordRoute
 }
 
 export interface FileRoutesById {
@@ -99,14 +115,26 @@ export interface FileRoutesById {
   '/debounced-field': typeof DebouncedFieldRoute
   '/event-form': typeof EventFormRoute
   '/field-form': typeof FieldFormRoute
+  '/password': typeof PasswordRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/debounced-field' | '/event-form' | '/field-form'
+  fullPaths:
+    | '/'
+    | '/debounced-field'
+    | '/event-form'
+    | '/field-form'
+    | '/password'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/debounced-field' | '/event-form' | '/field-form'
-  id: '__root__' | '/' | '/debounced-field' | '/event-form' | '/field-form'
+  to: '/' | '/debounced-field' | '/event-form' | '/field-form' | '/password'
+  id:
+    | '__root__'
+    | '/'
+    | '/debounced-field'
+    | '/event-form'
+    | '/field-form'
+    | '/password'
   fileRoutesById: FileRoutesById
 }
 
@@ -115,6 +143,7 @@ export interface RootRouteChildren {
   DebouncedFieldRoute: typeof DebouncedFieldRoute
   EventFormRoute: typeof EventFormRoute
   FieldFormRoute: typeof FieldFormRoute
+  PasswordRoute: typeof PasswordRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -122,6 +151,7 @@ const rootRouteChildren: RootRouteChildren = {
   DebouncedFieldRoute: DebouncedFieldRoute,
   EventFormRoute: EventFormRoute,
   FieldFormRoute: FieldFormRoute,
+  PasswordRoute: PasswordRoute,
 }
 
 export const routeTree = rootRoute
@@ -137,7 +167,8 @@ export const routeTree = rootRoute
         "/",
         "/debounced-field",
         "/event-form",
-        "/field-form"
+        "/field-form",
+        "/password"
       ]
     },
     "/": {
@@ -151,6 +182,9 @@ export const routeTree = rootRoute
     },
     "/field-form": {
       "filePath": "field-form.tsx"
+    },
+    "/password": {
+      "filePath": "password.tsx"
     }
   }
 }
